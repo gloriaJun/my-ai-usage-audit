@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLanguageStore } from "@/i18n/store";
+import { t } from "@/i18n/messages";
 
 interface QuizTerminalProps {
   scenario: string;
@@ -16,6 +18,8 @@ const BOOT_LINES = [
 export default function QuizTerminal({ scenario, questionNumber }: QuizTerminalProps) {
   const [displayedText, setDisplayedText] = useState("");
   const [done, setDone] = useState(false);
+  const language = useLanguageStore((state) => state.language);
+  const msg = t(language);
 
   // Typing animation — reset when scenario changes
   useEffect(() => {
@@ -63,7 +67,7 @@ export default function QuizTerminal({ scenario, questionNumber }: QuizTerminalP
 
         {/* Question number label */}
         <p className="text-[9px] uppercase tracking-widest text-[#84967E] mb-1">
-          Q_{String(questionNumber).padStart(2, "0")} / CRITICAL_DECISION_POINT
+          Q_{String(questionNumber).padStart(2, "0")} / {msg.questionDecisionPoint}
         </p>
 
         {/* Scenario text with double border */}

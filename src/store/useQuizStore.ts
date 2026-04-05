@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { QuizState, Option } from "@/types";
-import { questions } from "@/data/questions";
 import { determineCharacter } from "@/lib/scoring";
 
 export const useQuizStore = create<QuizState>((set, get) => ({
@@ -12,21 +11,24 @@ export const useQuizStore = create<QuizState>((set, get) => ({
   logMessages: [],
   character: null,
 
-  selectOption: (questionId: string, optionIndex: number, option: Option) => {
-    const question = questions.find((q) => q.id === questionId);
-    if (!question) return;
+  selectOption: (
+    questionId: string,
+    category: string,
+    optionIndex: number,
+    option: Option
+  ) => {
     set((state) => ({
       answers: { ...state.answers, [questionId]: optionIndex },
       totalScore: state.totalScore + option.score,
       totalTokenImpact: state.totalTokenImpact + option.tokenImpact,
       categoryScores: {
         ...state.categoryScores,
-        [question.category]: {
+        [category]: {
           score:
-            (state.categoryScores[question.category]?.score ?? 0) +
+            (state.categoryScores[category]?.score ?? 0) +
             option.score,
           tokenImpact:
-            (state.categoryScores[question.category]?.tokenImpact ?? 0) +
+            (state.categoryScores[category]?.tokenImpact ?? 0) +
             option.tokenImpact,
         },
       },

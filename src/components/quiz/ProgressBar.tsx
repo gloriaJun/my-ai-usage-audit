@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLanguageStore } from "@/i18n/store";
+import { t } from "@/i18n/messages";
 
 interface ProgressBarProps {
   currentStep: number; // 0-6
@@ -8,12 +10,15 @@ interface ProgressBarProps {
 }
 
 export default function ProgressBar({ currentStep, totalSteps = 7 }: ProgressBarProps) {
+  const language = useLanguageStore((state) => state.language);
+  const msg = t(language);
+
   return (
     <div className="w-full">
       {/* Labels */}
       <div className="flex items-center justify-between mb-2">
         <span className="text-[10px] font-bold text-[#84967E] uppercase tracking-widest">
-          AUDIT_PROGRESS
+          {msg.progress}
         </span>
         <span className="text-[10px] font-bold text-[#00FF41]">
           {currentStep + 1}/{totalSteps}
@@ -23,7 +28,6 @@ export default function ProgressBar({ currentStep, totalSteps = 7 }: ProgressBar
       {/* Blocks */}
       <div className="flex gap-1">
         {Array.from({ length: totalSteps }).map((_, i) => {
-          const isCompleted = i < currentStep;
           const isCurrent = i === currentStep;
           const isFuture = i > currentStep;
 

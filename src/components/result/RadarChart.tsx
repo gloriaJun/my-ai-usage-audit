@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import { useMemo } from "react";
+import { useLanguageStore } from "@/i18n/store";
+import { t } from "@/i18n/messages";
 
 interface RadarChartProps {
   categoryScores: Record<string, { score: number; tokenImpact: number }>;
@@ -16,8 +18,6 @@ const CATEGORIES = [
   "tool",
   "workflow",
 ];
-
-const LABELS = ["Session", "Prompt", "Error", "Code", "Memory", "Tool", "Workflow"];
 
 const MAX_RADIUS = 100;
 const CENTER_X = 150;
@@ -54,6 +54,10 @@ function HeptagonGrid({ fraction }: { fraction: number }) {
 }
 
 export default function RadarChart({ categoryScores }: RadarChartProps) {
+  const language = useLanguageStore((state) => state.language);
+  const msg = t(language);
+  const labels = CATEGORIES.map((cat) => msg.categoryLabels[cat as keyof typeof msg.categoryLabels]);
+
   const dataPoints = useMemo(() => {
     return CATEGORIES.map((cat, i) => {
       const score = categoryScores[cat]?.score ?? 0;
@@ -65,18 +69,10 @@ export default function RadarChart({ categoryScores }: RadarChartProps) {
 
   const dataPath = pointsToPath(dataPoints);
 
-  // Compute perimeter for stroke dash animation
-  const perimeterEstimate = dataPoints.reduce((acc, pt, i) => {
-    const next = dataPoints[(i + 1) % dataPoints.length];
-    const dx = next.x - pt.x;
-    const dy = next.y - pt.y;
-    return acc + Math.sqrt(dx * dx + dy * dy);
-  }, 0);
-
   return (
     <div className="bg-[#0E0E0E] border border-[#3B4B37]/15 p-6">
       <p className="text-[9px] uppercase tracking-widest text-[#84967E] mb-4">
-        CAPABILITY_RADAR
+        {msg.capabilityRadar}
       </p>
       <div className="flex justify-center">
         <svg
@@ -172,7 +168,7 @@ export default function RadarChart({ categoryScores }: RadarChartProps) {
                 fontFamily="monospace"
                 opacity="0.8"
               >
-                {LABELS[i]}
+                {labels[i]}
               </text>
             );
           })}
@@ -190,7 +186,7 @@ export default function RadarChart({ categoryScores }: RadarChartProps) {
                 style={{ backgroundColor: "#33FF33", boxShadow: "0 0 3px #33FF33" }}
               />
               <span className="text-[9px] uppercase tracking-wider text-[#84967E]">
-                {LABELS[i]}
+                {labels[i]}
               </span>
               <span className="text-[9px] text-[#33FF33] ml-auto">{score}/3</span>
             </div>

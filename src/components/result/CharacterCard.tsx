@@ -1,7 +1,9 @@
 "use client";
 
 import { Character } from "@/types";
-import { categoryTips } from "@/data/characters";
+import { getCategoryTips, getCharacterDescription } from "@/data/characters";
+import { useLanguageStore } from "@/i18n/store";
+import { t } from "@/i18n/messages";
 
 interface CharacterCardProps {
   character: Character;
@@ -53,6 +55,9 @@ export default function CharacterCard({
   strongCategories,
   weakCategories,
 }: CharacterCardProps) {
+  const language = useLanguageStore((state) => state.language);
+  const msg = t(language);
+  const categoryTips = getCategoryTips(language);
   const rankStyles = getRankStyles(character.rank);
   const topStrong = strongCategories.slice(0, 2);
   const topWeak = weakCategories.slice(0, 2);
@@ -124,7 +129,7 @@ export default function CharacterCard({
 
       {/* Description */}
       <p className="text-[#84967E] text-sm leading-relaxed mb-6">
-        {character.description}
+        {getCharacterDescription(character.id, language) || character.description}
       </p>
 
       {/* Strengths & Weaknesses */}
@@ -132,7 +137,7 @@ export default function CharacterCard({
         {topStrong.length > 0 && (
           <div>
             <p className="text-[9px] uppercase tracking-widest text-[#84967E] mb-2">
-              STRENGTHS
+              {msg.strengths}
             </p>
             <ul className="space-y-1">
               {topStrong.map((cat) => (
@@ -156,7 +161,7 @@ export default function CharacterCard({
         {topWeak.length > 0 && (
           <div>
             <p className="text-[9px] uppercase tracking-widest text-[#84967E] mb-2">
-              WEAKNESSES
+              {msg.weaknesses}
             </p>
             <ul className="space-y-1">
               {topWeak.map((cat) => (

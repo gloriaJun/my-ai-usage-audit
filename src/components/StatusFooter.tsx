@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLanguageStore } from "@/i18n/store";
+import { t } from "@/i18n/messages";
 
 function formatUptime(seconds: number): string {
   const h = Math.floor(seconds / 3600);
@@ -11,6 +13,8 @@ function formatUptime(seconds: number): string {
 
 export default function StatusFooter() {
   const [uptime, setUptime] = useState(0);
+  const language = useLanguageStore((state) => state.language);
+  const msg = t(language);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -26,7 +30,7 @@ export default function StatusFooter() {
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-[#00FF41] animate-pulse shadow-[0_0_5px_#00FF41]" />
           <span className="text-[9px] uppercase tracking-widest text-[#00FF41] font-bold">
-            SYSTEM_LIVE
+            {msg.systemLive}
           </span>
         </div>
 
@@ -37,7 +41,7 @@ export default function StatusFooter() {
 
         {/* Right: secure node */}
         <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-widest text-[#84967E]">
-          <span>SECURE_NODE_ALPHA</span>
+          <span>{msg.secureNode}</span>
           <span>&#x1F512;</span>
         </div>
       </div>

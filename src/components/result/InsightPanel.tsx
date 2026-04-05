@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { categoryTips } from "@/data/characters";
+import { getCategoryTips } from "@/data/characters";
+import { useLanguageStore } from "@/i18n/store";
+import { t } from "@/i18n/messages";
 
 interface InsightPanelProps {
   weakCategories: string[];
@@ -17,6 +19,9 @@ interface InsightItemProps {
 function InsightItem({ cat, score }: InsightItemProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const language = useLanguageStore((state) => state.language);
+  const msg = t(language);
+  const categoryTips = getCategoryTips(language);
   const tip = categoryTips[cat];
 
   if (!tip) return null;
@@ -82,7 +87,7 @@ function InsightItem({ cat, score }: InsightItemProps) {
                 <div className="relative">
                   <div className="flex items-center justify-between px-3 py-1.5 bg-[#131313] border border-[#3B4B37]/30 border-b-0">
                     <span className="text-[9px] uppercase tracking-widest text-[#3B4B37]">
-                      SNIPPET
+                      {msg.snippet}
                     </span>
                     <button
                       onClick={handleCopy}
@@ -91,7 +96,7 @@ function InsightItem({ cat, score }: InsightItemProps) {
                         color: copied ? "#00FF41" : "#84967E",
                       }}
                     >
-                      {copied ? "COPIED!" : "COPY"}
+                      {copied ? msg.copied : msg.copy}
                     </button>
                   </div>
                   <pre className="bg-[#131313] border border-[#3B4B37]/30 px-3 py-3 text-[11px] font-mono text-[#33FF33] overflow-x-auto leading-relaxed whitespace-pre">
@@ -111,14 +116,17 @@ export default function InsightPanel({
   weakCategories,
   categoryScores,
 }: InsightPanelProps) {
+  const language = useLanguageStore((state) => state.language);
+  const msg = t(language);
+
   if (weakCategories.length === 0) {
     return (
       <div className="bg-[#0E0E0E] border border-[#3B4B37]/15 p-6">
         <p className="text-[9px] uppercase tracking-widest text-[#84967E] mb-4">
-          ACTIONABLE_INSIGHTS
+          {msg.actionableInsights}
         </p>
         <p className="text-xs text-[#33FF33] tracking-wider">
-          [OK] ALL_CATEGORIES_OPTIMAL — No weak areas detected.
+          {msg.allCategoriesOptimal}
         </p>
       </div>
     );
@@ -127,10 +135,11 @@ export default function InsightPanel({
   return (
     <div className="bg-[#0E0E0E] border border-[#3B4B37]/15 p-6">
       <p className="text-[9px] uppercase tracking-widest text-[#84967E] mb-1">
-        ACTIONABLE_INSIGHTS
+        {msg.actionableInsights}
       </p>
       <p className="text-[10px] text-[#3B4B37] mb-4">
-        {weakCategories.length} area{weakCategories.length !== 1 ? "s" : ""} flagged for improvement
+        {weakCategories.length}{" "}
+        {weakCategories.length === 1 ? msg.areaFlagged : msg.areasFlagged}
       </p>
 
       <div className="space-y-2">

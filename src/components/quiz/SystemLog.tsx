@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguageStore } from "@/i18n/store";
 
 interface SystemLogProps {
   messages: string[];
@@ -23,7 +24,9 @@ function fakeTimestamp(index: number): string {
 
 export default function SystemLog({ messages }: SystemLogProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const language = useLanguageStore((state) => state.language);
   const displayMessages = messages.length === 0 ? BOOT_MESSAGES : messages;
+  const logTitle = language === "ko" ? "시스템 이벤트 로그" : "SYSTEM_EVENT_LOG";
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -46,7 +49,7 @@ export default function SystemLog({ messages }: SystemLogProps) {
           <rect x="5" y="9" width="7" height="1.5" fill="#84967E" />
         </svg>
         <span className="text-[10px] uppercase tracking-widest text-[#84967E] font-bold">
-          SYSTEM_EVENT_LOG
+          {logTitle}
         </span>
       </div>
 

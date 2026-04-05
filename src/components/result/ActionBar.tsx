@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { Character } from "@/types";
+import { useLanguageStore } from "@/i18n/store";
+import { t } from "@/i18n/messages";
+import { getCharacterDescription } from "@/data/characters";
 
 interface ActionBarProps {
   onRetry: () => void;
@@ -32,7 +35,9 @@ function drawRoundedRect(
 
 function generateCard(
   character: Character,
-  categoryScores: Record<string, { score: number; tokenImpact: number }>
+  categoryScores: Record<string, { score: number; tokenImpact: number }>,
+  categoryLabels: Record<string, string>,
+  description: string
 ): Promise<Blob | null> {
   return new Promise((resolve) => {
     const canvas = document.createElement("canvas");
@@ -116,7 +121,7 @@ function generateCard(
     ctx.fillStyle = "#84967E";
     ctx.font = "13px monospace";
     ctx.letterSpacing = "0px";
-    ctx.fillText(character.description, 30, 168);
+    ctx.fillText(description, 30, 168);
 
     // Divider
     ctx.strokeStyle = "#3B4B37";
@@ -136,13 +141,13 @@ function generateCard(
 
     // Category scores
     const categories = [
-      ["Session", "session"],
-      ["Prompt", "prompt"],
-      ["Error", "error"],
-      ["Code", "code-review"],
-      ["Memory", "memory"],
-      ["Tool", "tool"],
-      ["Workflow", "workflow"],
+      [categoryLabels.session, "session"],
+      [categoryLabels.prompt, "prompt"],
+      [categoryLabels.error, "error"],
+      [categoryLabels["code-review"], "code-review"],
+      [categoryLabels.memory, "memory"],
+      [categoryLabels.tool, "tool"],
+      [categoryLabels.workflow, "workflow"],
     ];
 
     const cols = 3;
@@ -193,6 +198,8 @@ export default function ActionBar({
   character,
   categoryScores,
 }: ActionBarProps) {
+  const language = useLanguageStore((state) => state.language);
+  const msg = t(language);
   const [shareStatus, setShareStatus] = useState<"idle" | "copied" | "shared">("idle");
   const [exportStatus, setExportStatus] = useState<"idle" | "generating">("idle");
 
@@ -200,7 +207,12 @@ export default function ActionBar({
     if (exportStatus === "generating") return;
     setExportStatus("generating");
     try {
-      const blob = await generateCard(character, categoryScores);
+      const blob = await generateCard(
+        character,
+        categoryScores,
+        msg.categoryLabels,
+        getCharacterDescription(character.id, language) || character.description
+      );
       if (!blob) return;
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -214,7 +226,7 @@ export default function ActionBar({
   };
 
   const handleShare = async () => {
-    const text = `나는 [${character.name}] 입니다! (${character.rank}-RANK) - My AI Usage Audit에서 확인해보세요!`;
+    const text = msg.shareText(character.name, character.rank);
     const url = typeof window !== "undefined" ? window.location.origin : "";
 
     if (navigator.share) {
@@ -242,7 +254,7 @@ export default function ActionBar({
         disabled={exportStatus === "generating"}
         className="flex-1 bg-[#2A2A2A] border border-[#3B4B37]/30 text-[#E5E2E1] text-xs font-bold tracking-widest uppercase py-3 px-4 transition-all duration-200 hover:border-[#84967E]/60 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {exportStatus === "generating" ? "GENERATING..." : "EXPORT_CARD"}
+        {exportStatus === "generating" ? msg.generating : msg.exportCard}
       </button>
 
       {/* SHARE_RESULT */}
@@ -257,10 +269,10 @@ export default function ActionBar({
         }}
       >
         {shareStatus === "copied"
-          ? "LINK_COPIED!"
+          ? msg.linkCopied
           : shareStatus === "shared"
-          ? "SHARED!"
-          : "SHARE_RESULT"}
+          ? msg.shared
+          : msg.shareResult}
       </button>
 
       {/* RETRY_AUDIT */}
@@ -268,7 +280,7 @@ export default function ActionBar({
         onClick={onRetry}
         className="flex-1 border border-[#00FF41] text-[#00FF41] text-xs font-bold tracking-widest uppercase py-3 px-4 transition-all duration-200 hover:bg-[#00FF41] hover:text-[#131313]"
       >
-        RETRY_AUDIT
+        {msg.retryAudit}
       </button>
     </div>
   );

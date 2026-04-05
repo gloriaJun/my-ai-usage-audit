@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQuizStore } from "@/store/useQuizStore";
-import { questions } from "@/data/questions";
+import { getQuestions } from "@/data/questions";
 import TopBar from "@/components/TopBar";
 import StatusFooter from "@/components/StatusFooter";
 import QuizTerminal from "@/components/quiz/QuizTerminal";
@@ -11,6 +10,7 @@ import OptionButtons from "@/components/quiz/OptionButtons";
 import TokenGauge from "@/components/quiz/TokenGauge";
 import SystemLog from "@/components/quiz/SystemLog";
 import ProgressBar from "@/components/quiz/ProgressBar";
+import { useLanguageStore } from "@/i18n/store";
 
 export default function QuizPage() {
   const router = useRouter();
@@ -22,13 +22,8 @@ export default function QuizPage() {
     nextStep,
     calculateResult,
   } = useQuizStore();
-
-  const [disabled, setDisabled] = useState(false);
-
-  // Reset disabled state whenever step changes (component key forces OptionButtons remount)
-  useEffect(() => {
-    setDisabled(false);
-  }, [currentStep]);
+  const language = useLanguageStore((state) => state.language);
+  const questions = getQuestions(language);
 
   const currentQuestion = questions[currentStep];
 
@@ -36,9 +31,8 @@ export default function QuizPage() {
     if (!currentQuestion) return;
 
     const option = currentQuestion.options[index];
-    setDisabled(true);
 
-    selectOption(currentQuestion.id, index, option);
+    selectOption(currentQuestion.id, currentQuestion.category, index, option);
 
     setTimeout(() => {
       nextStep();
@@ -81,7 +75,7 @@ export default function QuizPage() {
               key={`mobile-options-${currentStep}`}
               options={currentQuestion.options}
               onSelect={handleOptionSelect}
-              disabled={disabled}
+              disabled={false}
             />
             <SystemLog messages={logMessages} />
           </div>
@@ -99,7 +93,7 @@ export default function QuizPage() {
                 key={`desktop-options-${currentStep}`}
                 options={currentQuestion.options}
                 onSelect={handleOptionSelect}
-                disabled={disabled}
+                disabled={false}
               />
             </div>
 

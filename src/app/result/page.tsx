@@ -10,10 +10,14 @@ import CharacterCard from "@/components/result/CharacterCard";
 import RadarChart from "@/components/result/RadarChart";
 import InsightPanel from "@/components/result/InsightPanel";
 import ActionBar from "@/components/result/ActionBar";
+import { useLanguageStore } from "@/i18n/store";
+import { t } from "@/i18n/messages";
 
 export default function ResultPage() {
   const router = useRouter();
   const { character, categoryScores, totalTokenImpact, reset } = useQuizStore();
+  const language = useLanguageStore((state) => state.language);
+  const msg = t(language);
 
   useEffect(() => {
     if (!character) {
@@ -66,17 +70,17 @@ export default function ResultPage() {
         {/* System Analysis Log */}
         <div className="bg-[#0E0E0E] border border-[#3B4B37]/15 p-6 mb-6">
           <p className="text-[9px] uppercase tracking-widest text-[#84967E] mb-3">
-            SYSTEM_ANALYSIS_STREAM
+            {msg.systemAnalysisStream}
           </p>
           <div className="space-y-1 font-mono text-xs">
             <div className="flex gap-3">
               <span className="text-[#3B4B37]">0x001</span>
-              <span className="text-[#33FF33]">DIAGNOSTIC SEQUENCE COMPLETE</span>
+              <span className="text-[#33FF33]">{msg.diagnosticComplete}</span>
             </div>
             <div className="flex gap-3">
               <span className="text-[#3B4B37]">0x002</span>
               <span className="text-[#84967E]">
-                TOKEN EFFICIENCY RATIO:{" "}
+                {msg.tokenEfficiencyRatio}:{" "}
                 <span className="text-[#33FF33]">{tokenRatio}</span>
               </span>
             </div>
@@ -97,13 +101,13 @@ export default function ResultPage() {
                 >
                   {character.rank}-RANK
                 </span>{" "}
-                STATUS CONFIRMED
+                {msg.statusConfirmed}
               </span>
             </div>
             <div className="flex gap-3">
               <span className="text-[#3B4B37]">0x004</span>
               <span className="text-[#84967E]">
-                OPERATOR CLEARANCE VALIDATED —{" "}
+                {msg.operatorClearanceValidated} —{" "}
                 <span className="text-[#E5E2E1]">{character.name}</span>
               </span>
             </div>

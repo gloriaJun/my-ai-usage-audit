@@ -1,5 +1,9 @@
 "use client";
 
+import LanguageToggle from "@/components/common/LanguageToggle";
+import { useLanguageStore } from "@/i18n/store";
+import { t } from "@/i18n/messages";
+
 interface TopBarProps {
   mode: "quiz" | "result";
   currentStep?: number; // 0-6
@@ -8,6 +12,8 @@ interface TopBarProps {
 
 export default function TopBar({ mode, currentStep = 0, onRetry }: TopBarProps) {
   const totalSteps = 7;
+  const language = useLanguageStore((state) => state.language);
+  const msg = t(language);
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-[#131313] border-b border-[#3B4B37]/20 px-6 py-4">
@@ -19,15 +25,17 @@ export default function TopBar({ mode, currentStep = 0, onRetry }: TopBarProps) 
           </span>
         ) : (
           <span className="text-[#00FF41] font-bold tracking-widest uppercase text-xl glow-text">
-            AUDIT_COMPLETE
+            {msg.auditComplete}
           </span>
         )}
 
         {/* Right */}
         {mode === "quiz" ? (
           <div className="flex items-center gap-4">
+            <LanguageToggle />
             <span className="text-[#00FF41] text-sm tracking-widest uppercase">
-              STEP {String(currentStep + 1).padStart(2, "0")}/{String(totalSteps).padStart(2, "0")}
+              {msg.step} {String(currentStep + 1).padStart(2, "0")}/
+              {String(totalSteps).padStart(2, "0")}
             </span>
             {/* Mini progress blocks */}
             <div className="flex gap-1">
@@ -46,12 +54,15 @@ export default function TopBar({ mode, currentStep = 0, onRetry }: TopBarProps) 
             </div>
           </div>
         ) : (
-          <button
-            onClick={onRetry}
-            className="border border-[#00FF41] text-[#00FF41] px-4 py-1.5 text-sm tracking-widest uppercase transition-all duration-200 hover:bg-[#00FF41] hover:text-[#131313]"
-          >
-            RETRY_AUDIT
-          </button>
+          <div className="flex items-center gap-3">
+            <LanguageToggle />
+            <button
+              onClick={onRetry}
+              className="border border-[#00FF41] text-[#00FF41] px-4 py-1.5 text-sm tracking-widest uppercase transition-all duration-200 hover:bg-[#00FF41] hover:text-[#131313]"
+            >
+              {msg.retryAudit}
+            </button>
+          </div>
         )}
       </div>
     </header>

@@ -45,6 +45,7 @@ export interface QuizState {
   character: Character | null;
   selectOption: (
     questionId: string,
+    category: string,
     optionIndex: number,
     option: Option
   ) => void;
@@ -52,3 +53,5 @@ export interface QuizState {
   calculateResult: () => void;
   reset: () => void;
 }
+
+export type Language = "ko" | "en";

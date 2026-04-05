@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLanguageStore } from "@/i18n/store";
 
 interface TokenGaugeProps {
   value: number; // 0-21
@@ -21,8 +22,17 @@ function getNeedleRotation(value: number): number {
 }
 
 export default function TokenGauge({ value }: TokenGaugeProps) {
+  const language = useLanguageStore((state) => state.language);
   const clampedValue = Math.min(Math.max(value, 0), MAX);
   const status = getStatus(clampedValue);
+  const statusLabel =
+    language === "ko"
+      ? status.label === "SAFE"
+        ? "안전"
+        : status.label === "WARNING"
+        ? "주의"
+        : "위험"
+      : status.label;
   const progress = clampedValue / MAX;
   const arcFilled = ARC_LENGTH * progress;
   const needleRotation = getNeedleRotation(clampedValue);
@@ -129,7 +139,7 @@ export default function TokenGauge({ value }: TokenGaugeProps) {
         className="text-center text-sm font-bold tracking-widest uppercase mt-1"
         style={{ color: status.color }}
       >
-        {status.label}
+        {statusLabel}
       </p>
 
       {/* Stats */}

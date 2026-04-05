@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useQuizStore } from "@/store/useQuizStore";
 import StatusFooter from "@/components/StatusFooter";
+import LanguageToggle from "@/components/common/LanguageToggle";
+import { useLanguageStore } from "@/i18n/store";
+import { t } from "@/i18n/messages";
 
 const BOOT_LINES = [
   "[ 0.000000] INITIALIZING KERNEL AUDIT VERSION 2.0.4",
@@ -21,6 +24,8 @@ const BOOT_DELAY_MS = 300;
 export default function Home() {
   const router = useRouter();
   const reset = useQuizStore((state) => state.reset);
+  const language = useLanguageStore((state) => state.language);
+  const msg = t(language);
 
   const [visibleLines, setVisibleLines] = useState<string[]>([]);
   const [booting, setBooting] = useState(true);
@@ -30,7 +35,7 @@ export default function Home() {
   }, [reset]);
 
   useEffect(() => {
-    let timeouts: ReturnType<typeof setTimeout>[] = [];
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
 
     BOOT_LINES.forEach((line, i) => {
       const t = setTimeout(() => {
@@ -49,6 +54,9 @@ export default function Home() {
   return (
     <>
       <main className="min-h-screen flex flex-col items-center justify-center px-6 pb-16">
+        <div className="fixed top-5 right-6 z-50">
+          <LanguageToggle />
+        </div>
         {booting ? (
           /* Boot sequence */
           <div className="w-full max-w-2xl font-mono">
@@ -77,14 +85,13 @@ export default function Home() {
                 MY-AI-USAGE-AUDIT
               </h1>
               <p className="mt-3 text-sm md:text-base text-[#84967E] tracking-wide">
-                당신의 AI 코딩 습관을 진단합니다
+                {msg.landingTagline}
               </p>
             </div>
 
             {/* Description */}
             <p className="max-w-md text-sm text-[#84967E]/80 leading-relaxed">
-              7가지 시나리오를 통해 Claude Code 활용 수준을 분석하고, 맞춤형
-              개선 팁을 제공합니다.
+              {msg.landingDescription}
             </p>
 
             {/* Start button */}
@@ -101,12 +108,12 @@ export default function Home() {
                 "btn-pulse-glow",
               ].join(" ")}
             >
-              START_AUDIT
+              {msg.startAudit}
             </motion.button>
 
             {/* Footer info */}
             <p className="text-[10px] tracking-widest text-[#84967E]/60 uppercase">
-              7 QUESTIONS &nbsp;|&nbsp; 5 CHARACTERS &nbsp;|&nbsp; ~3 MIN
+              {msg.footerSummary}
             </p>
           </motion.div>
         )}
