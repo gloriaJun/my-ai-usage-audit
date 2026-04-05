@@ -1,0 +1,595 @@
+<!doctype html>
+
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>TACTICAL_TERMINAL // AUDIT_RESULT</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline-variant": "#3c4b36",
+              "on-error-container": "#ffdad6",
+              "on-primary-fixed-variant": "#005303",
+              "secondary-container": "#fdaf00",
+              tertiary: "#eeffe6",
+              "surface-container-high": "#2a2a2a",
+              "inverse-primary": "#006e06",
+              "on-tertiary-fixed": "#002203",
+              "surface-container-highest": "#353534",
+              "on-surface-variant": "#baccb1",
+              "primary-fixed": "#76ff65",
+              "primary-fixed-dim": "#00e61b",
+              "on-tertiary-fixed-variant": "#00530e",
+              "tertiary-fixed": "#72ff70",
+              "error-container": "#93000a",
+              "surface-container": "#201f1f",
+              "on-primary": "#003a02",
+              outline: "#85967d",
+              "on-background": "#e5e2e1",
+              "tertiary-fixed-dim": "#00e639",
+              background: "#131313",
+              "surface-dim": "#131313",
+              "surface-container-low": "#1c1b1b",
+              "tertiary-container": "#29ff49",
+              "on-surface": "#e5e2e1",
+              "on-secondary-fixed": "#281800",
+              "inverse-on-surface": "#313030",
+              "primary-container": "#33ff33",
+              error: "#ffb4ab",
+              "surface-container-lowest": "#0e0e0e",
+              surface: "#131313",
+              "on-secondary-container": "#694600",
+              "on-secondary-fixed-variant": "#614000",
+              "on-primary-container": "#007207",
+              "surface-tint": "#00e61b",
+              "on-tertiary": "#003907",
+              "secondary-fixed": "#ffddaf",
+              "secondary-fixed-dim": "#ffba43",
+              secondary: "#ffd393",
+              "surface-bright": "#3a3939",
+              "on-tertiary-container": "#007117",
+              "surface-variant": "#353534",
+              primary: "#eeffe4",
+              "on-primary-fixed": "#002201",
+              "on-secondary": "#432c00",
+              "on-error": "#690005",
+              "inverse-surface": "#e5e2e1",
+            },
+            fontFamily: {
+              headline: ["Space Grotesk"],
+              body: ["Space Grotesk"],
+              label: ["Space Grotesk"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background-color: #131313;
+        overflow: hidden;
+      }
+      .scanlines {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+          linear-gradient(
+            90deg,
+            rgba(255, 0, 0, 0.06),
+            rgba(0, 255, 0, 0.02),
+            rgba(0, 0, 255, 0.06)
+          );
+        background-size:
+          100% 4px,
+          3px 100%;
+        pointer-events: none;
+        z-index: 100;
+      }
+      .crt-glow {
+        text-shadow: 0 0 8px rgba(51, 255, 51, 0.6);
+      }
+      .radar-grid {
+        background-image: radial-gradient(circle, #3c4b36 1px, transparent 1px);
+        background-size: 30px 30px;
+      }
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0e0e0e;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #33ff33;
+      }
+    </style>
+  </head>
+  <body
+    class="font-body text-on-surface selection:bg-primary-container selection:text-on-primary-container"
+  >
+    <div class="scanlines"></div>
+    <div class="flex h-screen w-full">
+      <!-- SideNavBar -->
+      <aside
+        class="hidden md:flex flex-col h-full py-8 space-y-4 bg-[#0e0e0e] h-screen w-64 border-r border-[#3c4b36]/15"
+      >
+        <div class="px-6 mb-8">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 bg-surface-container-highest flex items-center justify-center border border-outline-variant/30"
+            >
+              <span
+                class="material-symbols-outlined text-primary-fixed-dim"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >terminal</span
+              >
+            </div>
+            <div>
+              <div
+                class="text-xs font-bold tracking-widest text-primary uppercase"
+              >
+                OPERATOR_01
+              </div>
+              <div class="text-[10px] text-on-surface-variant opacity-60">
+                LVL_99_TACTICIAN
+              </div>
+            </div>
+          </div>
+        </div>
+        <nav class="flex-1 px-2 space-y-1">
+          <div
+            class="text-primary bg-[#33ff33]/5 border-r-4 border-[#33ff33] flex items-center px-4 py-3 cursor-pointer group hover:text-[#ffb000] hover:bg-[#ffb000]/5 transition-colors"
+          >
+            <span class="material-symbols-outlined mr-3 text-sm"
+              >dashboard</span
+            >
+            <span
+              class="font-['Space_Grotesk'] text-xs font-medium tracking-widest uppercase"
+              >OVERVIEW</span
+            >
+          </div>
+          <div
+            class="text-[#baccb1] flex items-center px-4 py-3 cursor-pointer group hover:text-[#ffb000] hover:bg-[#ffb000]/5 transition-colors"
+          >
+            <span class="material-symbols-outlined mr-3 text-sm"
+              >query_stats</span
+            >
+            <span
+              class="font-['Space_Grotesk'] text-xs font-medium tracking-widest uppercase"
+              >ANALYTICS</span
+            >
+          </div>
+          <div
+            class="text-[#baccb1] flex items-center px-4 py-3 cursor-pointer group hover:text-[#ffb000] hover:bg-[#ffb000]/5 transition-colors"
+          >
+            <span class="material-symbols-outlined mr-3 text-sm">radar</span>
+            <span
+              class="font-['Space_Grotesk'] text-xs font-medium tracking-widest uppercase"
+              >THREAT_MAP</span
+            >
+          </div>
+          <div
+            class="text-[#baccb1] flex items-center px-4 py-3 cursor-pointer group hover:text-[#ffb000] hover:bg-[#ffb000]/5 transition-colors"
+          >
+            <span class="material-symbols-outlined mr-3 text-sm">history</span>
+            <span
+              class="font-['Space_Grotesk'] text-xs font-medium tracking-widest uppercase"
+              >ARCHIVE</span
+            >
+          </div>
+          <div
+            class="text-[#baccb1] flex items-center px-4 py-3 cursor-pointer group hover:text-[#ffb000] hover:bg-[#ffb000]/5 transition-colors"
+          >
+            <span class="material-symbols-outlined mr-3 text-sm">tune</span>
+            <span
+              class="font-['Space_Grotesk'] text-xs font-medium tracking-widest uppercase"
+              >SETTINGS</span
+            >
+          </div>
+        </nav>
+        <div class="px-6 mt-auto">
+          <button
+            class="w-full py-3 bg-primary-container text-on-primary font-bold tracking-tighter hover:bg-primary-fixed-dim transition-all active:scale-95"
+          >
+            INITIATE_SCAN
+          </button>
+        </div>
+      </aside>
+      <main class="flex-1 flex flex-col min-w-0 bg-surface">
+        <!-- TopNavBar -->
+        <header
+          class="flex justify-between items-center px-6 py-4 w-full border-b border-[#3c4b36]/15 bg-[#131313]"
+        >
+          <div class="flex items-center gap-8">
+            <div class="text-[#33ff33] font-black tracking-tighter text-xl">
+              TACTICAL_TERMINAL
+            </div>
+            <nav class="hidden lg:flex items-center gap-6">
+              <a
+                class="text-[#baccb1] opacity-70 hover:opacity-100 font-['Space_Grotesk'] uppercase tracking-[0.1em] font-bold text-xs"
+                href="#"
+                >DIAGNOSTICS</a
+              >
+              <a
+                class="text-[#33ff33] border-b-2 border-[#33ff33] pb-1 font-['Space_Grotesk'] uppercase tracking-[0.1em] font-bold text-xs"
+                href="#"
+                >MASTER_LOG</a
+              >
+              <a
+                class="text-[#baccb1] opacity-70 hover:opacity-100 font-['Space_Grotesk'] uppercase tracking-[0.1em] font-bold text-xs"
+                href="#"
+                >SYSTEM_OPS</a
+              >
+              <a
+                class="text-[#baccb1] opacity-70 hover:opacity-100 font-['Space_Grotesk'] uppercase tracking-[0.1em] font-bold text-xs"
+                href="#"
+                >SECURITY_CELL</a
+              >
+            </nav>
+          </div>
+          <div class="flex items-center gap-4">
+            <span
+              class="material-symbols-outlined text-[#33ff33] cursor-pointer hover:bg-[#33ff33]/10 p-2 transition-colors duration-150"
+              >settings</span
+            >
+            <span
+              class="material-symbols-outlined text-[#33ff33] cursor-pointer hover:bg-[#33ff33]/10 p-2 transition-colors duration-150"
+              >terminal</span
+            >
+          </div>
+        </header>
+        <!-- Main Content Area -->
+        <div
+          class="flex-1 overflow-hidden p-6 md:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-[1600px] mx-auto w-full"
+        >
+          <!-- Left Section: Identity -->
+          <div class="lg:col-span-5 flex flex-col space-y-6">
+            <div
+              class="relative bg-surface-container-lowest border-2 border-outline-variant/20 p-8 flex flex-col items-center justify-center overflow-hidden aspect-square lg:aspect-auto lg:h-full group"
+            >
+              <!-- ASCII Decorative Borders -->
+              <div
+                class="absolute top-2 left-2 text-outline-variant/30 font-mono text-[10px]"
+              >
+                [ID_ENCRYPTION_STATUS: ACTIVE]
+              </div>
+              <div
+                class="absolute bottom-2 right-2 text-outline-variant/30 font-mono text-[10px]"
+              >
+                VER_4.2.0_X64
+              </div>
+              <!-- Character Profile Wrapper (CRT Glass effect) -->
+              <div
+                class="w-full flex-1 flex flex-col items-center justify-center space-y-8 relative z-10"
+              >
+                <pre
+                  class="font-mono text-primary-fixed-dim leading-[1.1] text-[0.6rem] md:text-xs lg:text-[0.55rem] xl:text-xs select-none crt-glow"
+                >
+      .--------.
+    / .------. \
+   / /        \ \
+   | |        | |
+  _| |________| |_
+.' |_|        |_| '.
+'._____ ____ _____.'
+|     .'____'.     |
+'.__.'.'    '.'.__.'
+'.__.'      '.__.'
+  |                |
+  |  [X]      [X]  |
+  |       ..       |
+  |    .______.    |
+  |    '------'    |
+   \              /
+    '------------'
+                            </pre
+                >
+                <div class="text-center space-y-2">
+                  <h1
+                    class="text-3xl font-black tracking-tighter text-primary uppercase leading-none"
+                  >
+                    TOKEN ALCHEMIST
+                  </h1>
+                  <div class="flex items-center justify-center gap-4">
+                    <span class="h-px w-8 bg-outline-variant/40"></span>
+                    <span
+                      class="text-secondary font-mono tracking-widest text-[10px] uppercase"
+                      >Identity Verified</span
+                    >
+                    <span class="h-px w-8 bg-outline-variant/40"></span>
+                  </div>
+                </div>
+                <!-- Mastery Level Badge -->
+                <div
+                  class="relative px-6 py-3 bg-primary-container/10 border border-primary-container group-hover:shadow-[0_0_20px_rgba(51,255,51,0.2)] transition-shadow"
+                >
+                  <div
+                    class="absolute -top-1 -left-1 w-2 h-2 bg-primary-container"
+                  ></div>
+                  <div
+                    class="absolute -bottom-1 -right-1 w-2 h-2 bg-primary-container"
+                  ></div>
+                  <div class="flex items-center gap-3">
+                    <span
+                      class="material-symbols-outlined text-primary-container"
+                      style="font-variation-settings: &quot;FILL&quot; 1"
+                      >workspace_premium</span
+                    >
+                    <div class="flex flex-col">
+                      <span
+                        class="text-[10px] font-bold text-primary-container tracking-widest leading-none"
+                        >MASTERY LEVEL</span
+                      >
+                      <span class="text-xl font-black text-primary-container"
+                        >S-RANK</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Data Pulse Lines -->
+              <div
+                class="absolute inset-0 bg-gradient-to-b from-transparent via-primary-container/5 to-transparent h-20 w-full animate-pulse pointer-events-none opacity-20"
+              ></div>
+            </div>
+          </div>
+          <!-- Right Section: Data -->
+          <div class="lg:col-span-7 flex flex-col space-y-6">
+            <!-- Radar Chart Diagnostic -->
+            <div
+              class="bg-surface-container-lowest border border-outline-variant/15 p-6 flex flex-col h-1/2"
+            >
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <h2
+                    class="text-xs font-bold text-primary tracking-widest uppercase"
+                  >
+                    SKILL_VS_EFFICIENCY
+                  </h2>
+                  <p
+                    class="text-[10px] text-on-surface-variant font-mono opacity-50"
+                  >
+                    REAL_TIME_CALIBRATION_NODE_09
+                  </p>
+                </div>
+                <div
+                  class="bg-secondary/10 px-2 py-1 border border-secondary/20"
+                >
+                  <span class="text-[10px] font-mono text-secondary font-bold"
+                    >WARNING: PEAK_LIMIT_REACHED</span
+                  >
+                </div>
+              </div>
+              <div
+                class="flex-1 flex items-center justify-center relative radar-grid"
+              >
+                <!-- Placeholder for Radar SVG -->
+                <svg
+                  class="w-full max-w-[300px] h-full drop-shadow-[0_0_10px_rgba(51,255,51,0.4)]"
+                  viewbox="0 0 200 200"
+                >
+                  <!-- Background Circles -->
+                  <circle
+                    cx="100"
+                    cy="100"
+                    fill="none"
+                    r="80"
+                    stroke="#3c4b36"
+                    stroke-dasharray="2,2"
+                    stroke-width="0.5"
+                  ></circle>
+                  <circle
+                    cx="100"
+                    cy="100"
+                    fill="none"
+                    r="60"
+                    stroke="#3c4b36"
+                    stroke-width="0.5"
+                  ></circle>
+                  <circle
+                    cx="100"
+                    cy="100"
+                    fill="none"
+                    r="40"
+                    stroke="#3c4b36"
+                    stroke-width="0.5"
+                  ></circle>
+                  <circle
+                    cx="100"
+                    cy="100"
+                    fill="none"
+                    r="20"
+                    stroke="#3c4b36"
+                    stroke-width="0.5"
+                  ></circle>
+                  <!-- Axis Lines -->
+                  <line
+                    stroke="#3c4b36"
+                    stroke-width="0.5"
+                    x1="100"
+                    x2="100"
+                    y1="20"
+                    y2="180"
+                  ></line>
+                  <line
+                    stroke="#3c4b36"
+                    stroke-width="0.5"
+                    x1="20"
+                    x2="180"
+                    y1="100"
+                    y2="100"
+                  ></line>
+                  <!-- Data Polygon -->
+                  <path
+                    d="M100 30 L170 100 L120 160 L40 120 L50 60 Z"
+                    fill="rgba(51, 255, 51, 0.2)"
+                    stroke="#33ff33"
+                    stroke-width="2"
+                  ></path>
+                  <!-- Data Points -->
+                  <circle cx="100" cy="30" fill="#33ff33" r="2"></circle>
+                  <circle cx="170" cy="100" fill="#33ff33" r="2"></circle>
+                  <circle cx="120" cy="160" fill="#33ff33" r="2"></circle>
+                  <circle cx="40" cy="120" fill="#33ff33" r="2"></circle>
+                  <circle cx="50" cy="60" fill="#33ff33" r="2"></circle>
+                  <!-- Labels -->
+                  <text
+                    fill="#33ff33"
+                    font-family="Space Grotesk"
+                    font-size="8"
+                    text-anchor="middle"
+                    x="100"
+                    y="15"
+                  >
+                    SKILL
+                  </text>
+                  <text
+                    fill="#33ff33"
+                    font-family="Space Grotesk"
+                    font-size="8"
+                    text-anchor="start"
+                    x="185"
+                    y="103"
+                  >
+                    FLOW
+                  </text>
+                  <text
+                    fill="#33ff33"
+                    font-family="Space Grotesk"
+                    font-size="8"
+                    text-anchor="middle"
+                    x="100"
+                    y="195"
+                  >
+                    LOGIC
+                  </text>
+                  <text
+                    fill="#33ff33"
+                    font-family="Space Grotesk"
+                    font-size="8"
+                    text-anchor="end"
+                    x="10"
+                    y="103"
+                  >
+                    DRIVE
+                  </text>
+                </svg>
+              </div>
+            </div>
+            <!-- System Analysis Text Area -->
+            <div
+              class="bg-surface-container-lowest border border-outline-variant/15 flex-1 flex flex-col overflow-hidden"
+            >
+              <div
+                class="p-4 border-b border-outline-variant/15 bg-surface-container-low flex items-center justify-between"
+              >
+                <div class="flex items-center gap-2">
+                  <span
+                    class="w-2 h-2 bg-secondary animate-pulse rounded-full"
+                  ></span>
+                  <h3
+                    class="text-[10px] font-bold text-on-surface tracking-[0.2em] uppercase"
+                  >
+                    SYSTEM_ANALYSIS_STREAM
+                  </h3>
+                </div>
+                <div
+                  class="text-[8px] font-mono text-on-surface-variant opacity-40"
+                >
+                  BYTES_TRANSFERRED: 1.2GB
+                </div>
+              </div>
+              <div
+                class="flex-1 p-6 font-mono text-xs overflow-y-auto space-y-3"
+              >
+                <div class="flex gap-4">
+                  <span class="text-primary-fixed-dim opacity-40">0x001</span>
+                  <p class="text-on-surface-variant">
+                    INITIALIZING DIAGNOSTIC SEQUENCE...
+                  </p>
+                </div>
+                <div class="flex gap-4">
+                  <span class="text-primary-fixed-dim opacity-40">0x002</span>
+                  <p class="text-on-surface-variant">
+                    SCANNING CORE ARCHITECTURE FOR FRAGMENTATION [OK]
+                  </p>
+                </div>
+                <div class="flex gap-4">
+                  <span class="text-primary-fixed-dim opacity-40">0x003</span>
+                  <p class="text-secondary">
+                    WARNING: NEURAL OVERLAP DETECTED IN SECTOR 7G
+                  </p>
+                </div>
+                <div class="flex gap-4">
+                  <span class="text-primary-fixed-dim opacity-40">0x004</span>
+                  <p class="text-on-surface-variant">
+                    ALCHEMICAL TOKEN BALANCING COMPLETE... RATIO: 1.0023
+                  </p>
+                </div>
+                <div class="flex gap-4">
+                  <span class="text-primary-fixed-dim opacity-40">0x005</span>
+                  <p class="text-primary-fixed-dim">
+                    AUDIT RESULT: S-RANK STATUS CONFIRMED
+                  </p>
+                </div>
+                <div class="flex gap-4">
+                  <span class="text-primary-fixed-dim opacity-40">0x006</span>
+                  <p class="text-on-surface-variant">
+                    SYNCING WITH MASTER LOG AT 10.0.0.124...
+                  </p>
+                </div>
+                <div class="flex gap-4">
+                  <span class="text-primary-fixed-dim opacity-40">0x007</span>
+                  <p class="text-on-surface-variant">
+                    OPERATOR CLEARANCE LEVEL VALIDATED. ACCESS GRANTED.
+                  </p>
+                </div>
+                <div class="flex gap-4">
+                  <span class="text-primary-fixed-dim opacity-40">0x008</span>
+                  <p class="text-primary-fixed-dim opacity-60">
+                    &gt; <span class="animate-pulse">█</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Footer Action Strip -->
+            <div class="flex gap-4 h-12">
+              <button
+                class="flex-1 bg-surface-container-high border border-outline-variant/30 text-on-surface-variant font-bold text-xs tracking-widest hover:bg-surface-bright transition-all flex items-center justify-center gap-2"
+              >
+                <span class="material-symbols-outlined text-sm">download</span>
+                EXPORT_DATA
+              </button>
+              <button
+                class="flex-1 bg-primary-container text-on-primary font-bold text-xs tracking-widest hover:bg-primary-fixed-dim transition-all flex items-center justify-center gap-2"
+              >
+                <span class="material-symbols-outlined text-sm">share</span>
+                TRANSMIT_RESULT
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
